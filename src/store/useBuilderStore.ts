@@ -207,14 +207,14 @@ saveLayout: () => {
   },
 
   loadLayout: () => {
-    const savedLayout =
-      localStorage.getItem(STORAGE_KEY);
-
-    if (!savedLayout) {
-      return false;
-    }
-
     try {
+      const savedLayout =
+        localStorage.getItem(STORAGE_KEY);
+
+      if (!savedLayout) {
+        return false;
+      }
+
       const parsed = JSON.parse(savedLayout);
 
       if (!isValidLayout(parsed)) {
