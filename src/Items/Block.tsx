@@ -1,46 +1,78 @@
+import {
+  memo,
+  useCallback,
+  useMemo,
+  type MouseEvent,
+} from "react";
 import { useDraggable } from "@dnd-kit/core";
-import type { BlockProps } from "../types/BuilderStoreProps";
+import { useBuilderStore } from "../store/useBuilderStore";
 
+type BlockProps = {
+  id: string;
+  isSelected: boolean;
+  onSelect: (id: string) => void;
+};
 
 function Block({
-  block,
+  id,
   isSelected,
   onSelect,
 }: BlockProps) {
+  const block = useBuilderStore((state) => state.layout.blocks[id]);
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      if (block) {
+        onSelect(block.id);
+      }
+    },
+    [block, onSelect]
+  );
+  const blockStyle = useMemo(
+    () => ({
+      position: "absolute" as const,
+      left: block?.x ?? 0,
+      top: block?.y ?? 0,
+      width: block?.width ?? 200,
+      height: block?.height ?? 100,
+      zIndex: isSelected ? 10 : 1,
+      backgroundColor: "#ffffff",
+    }),
+    [block?.height, block?.width, block?.x, block?.y, isSelected]
+  );
+  const contentStyle = useMemo(
+    () => ({
+      color: block?.color ?? "#111827",
+      textAlign: block?.textAlign ?? "left",
+    }),
+    [block?.color, block?.textAlign]
+  );
+
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
   } = useDraggable({
-    id: `block-${block.id}`,
+    id: `block-${id}`,
   });
+
+  if (!block) {
+    return null;
+  }
 
   return (
     <div
   ref={setNodeRef}
   {...listeners}
   {...attributes}
-  onClick={(event) => {
-    event.stopPropagation();
-    onSelect(block.id);
-  }}
+  onClick={handleClick}
   style={{
-    position: "absolute",
-
-    left: block.x,
-    top: block.y,
-
-    width: block.width,
-    height: block.height,
-
+    ...blockStyle,
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
-
-    zIndex: isSelected ? 10 : 1,
-
-    backgroundColor: "#ffffff",
   }}
   className={`
     border
@@ -59,10 +91,7 @@ function Block({
     </div>
   ) : (
     <div
-      style={{
-        color: block.color,
-        textAlign: block.textAlign,
-      }}
+      style={contentStyle}
     >
       {block.text}
     </div>
@@ -71,4 +100,4 @@ function Block({
   );
 }
 
-export default Block;
+export default memo(Block);

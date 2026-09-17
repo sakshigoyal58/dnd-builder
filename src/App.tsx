@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   DndContext,
   type DragEndEvent,
 } from "@dnd-kit/core";
 
-import Canvas from "./components/Canvas";
-import Palette from "./components/Palette";
-import PropertiesPanel from "./components/PropertiesPanel";
+import Canvas from "./Components/Canvas";
+import Palette from "./Components/Palette";
+import PropertiesPanel from "./Components/PropertiesPanel";
 import { useBuilderStore } from "./store/useBuilderStore";
 
 function App() {
@@ -29,9 +29,9 @@ function App() {
   // Load saved layout when the application starts
   useEffect(() => {
     loadLayout();
-  }, []);
+  }, [loadLayout]);
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over, delta } = event;
 
     if (!over) {
@@ -108,7 +108,7 @@ function App() {
       x: Math.max(0, x),
       y: Math.max(0, y),
     });
-  };
+  }, [addBlock, updateBlockPosition]);
 
   return (
     <DndContext onDragEnd={handleDragEnd}>

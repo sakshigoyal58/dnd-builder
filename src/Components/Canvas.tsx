@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import Block from "../Items/Block";
 import DroppableArea from "../Items/DropableArea";
 import EmptyState from "../Items/EmptyState";
@@ -5,9 +6,16 @@ import { useBuilderStore } from "../store/useBuilderStore";
 
 function Canvas() {
   const order = useBuilderStore((s) => s.layout.order);
-  const blocks = useBuilderStore((s) => s.layout.blocks);
   const selectedId = useBuilderStore((s) => s.selectedId);
   const selectBlock = useBuilderStore((s) => s.selectBlock);
+  const handleSelect = useCallback(
+    (id: string) => selectBlock(id),
+    [selectBlock]
+  );
+  const clearSelection = useCallback(
+    () => selectBlock(null),
+    [selectBlock]
+  );
 
   return (
     <DroppableArea
@@ -15,7 +23,7 @@ function Canvas() {
       className="relative h-full w-full bg-gray-50"
     >
       <div
-        onClick={() => selectBlock(null)}
+        onClick={clearSelection}
         className="absolute inset-0"
       >
         {order.length === 0 && (
@@ -25,9 +33,9 @@ function Canvas() {
         {order.map((id) => (
           <Block
             key={id}
-            block={blocks[id]}
+            id={id}
             isSelected={id === selectedId}
-            onSelect={selectBlock}
+            onSelect={handleSelect}
           />
         ))}
       </div>
