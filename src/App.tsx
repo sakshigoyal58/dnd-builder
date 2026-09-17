@@ -3,7 +3,7 @@ import { DndContext } from "@dnd-kit/core";
 
 import Canvas from "./Components/Canvas";
 import BuilderToolbar from "./Components/BuilderToolbar";
-import Palette from "./Items/Palette";
+import Palette from "./Components/Palette";
 import ErrorBoundary from "./Items/ErrorBoundary";
 import LoadingState from "./Items/LoadingState";
 import { useBuilderController } from "./hooks/useBuilderController";
