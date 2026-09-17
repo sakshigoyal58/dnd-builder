@@ -5,6 +5,7 @@ import type { DroppableAreaProps } from "../types/DropableProps";
 function DroppableArea({
   id,
   className,
+  "aria-label": ariaLabel,
   children,
 }: DroppableAreaProps) {
   const { setNodeRef } = useDroppable({
@@ -12,7 +13,11 @@ function DroppableArea({
   });
 
   return (
-    <div ref={setNodeRef} className={className}>
+    <div
+      ref={setNodeRef}
+      className={className}
+      aria-label={ariaLabel}
+    >
       {children}
     </div>
   );

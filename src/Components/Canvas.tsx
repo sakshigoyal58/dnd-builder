@@ -20,6 +20,7 @@ function Canvas() {
   return (
     <DroppableArea
       id="canvas"
+      aria-label="Canvas drop area"
       className="relative h-full w-full bg-gray-50"
     >
       <div

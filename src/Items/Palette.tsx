@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { PALETTE_ITEMS } from '../constants/PaletteItems'
-import DraggableCard from '../Items/DraggableCard'
-import Panel from '../Items/Panel'
+import DraggableCard from './DraggableCard'
+import Panel from './Panel'
 
 function Palette() {
   const items = useMemo(
