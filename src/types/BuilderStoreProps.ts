@@ -44,6 +44,6 @@ export type BuilderState = {
 
   deleteBlock: (id: string) => void;
 
-  saveLayout: () => void;
-  loadLayout: () => void;
+  saveLayout: () => boolean;
+  loadLayout: () => boolean;
 }

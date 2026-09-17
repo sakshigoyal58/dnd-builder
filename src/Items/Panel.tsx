@@ -1,7 +1,9 @@
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="p-3 space-y-2">
-      <h3 className="text-xs font-semibold uppercase text-gray-500 mb-2">{title}</h3>
+    <div className="space-y-3 p-4">
+      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        {title}
+      </h2>
       {children}
     </div>
   )

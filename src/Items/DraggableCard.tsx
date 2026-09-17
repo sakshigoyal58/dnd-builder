@@ -10,8 +10,12 @@ function DraggableCard({ id, label, data }: DraggableCardProps) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="cursor-grab rounded-md border bg-white px-3 py-4 text-center text-sm shadow-sm"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Add ${label} block`}
+      aria-grabbed={isDragging}
+      className="cursor-grab rounded-lg border border-slate-200 bg-white px-3 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:cursor-grabbing"
+      style={{ opacity: isDragging ? 0.55 : 1 }}
     >
       {label}
     </div>

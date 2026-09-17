@@ -1,7 +1,11 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   DndContext,
+  KeyboardSensor,
+  PointerSensor,
   type DragEndEvent,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 
 import Canvas from "./Components/Canvas";
@@ -10,6 +14,12 @@ import PropertiesPanel from "./Components/PropertiesPanel";
 import { useBuilderStore } from "./store/useBuilderStore";
 
 function App() {
+  const [status, setStatus] = useState("Ready to build");
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor)
+  );
+
   const addBlock = useBuilderStore(
     (state) => state.addBlock
   );
@@ -110,44 +120,71 @@ function App() {
     });
   }, [addBlock, updateBlockPosition]);
 
+  const handleSave = useCallback(() => {
+    setStatus(saveLayout() ? "Layout saved" : "Unable to save layout");
+  }, [saveLayout]);
+
+  const handleLoad = useCallback(() => {
+    setStatus(
+      loadLayout()
+        ? "Layout loaded"
+        : "No valid saved layout found"
+    );
+  }, [loadLayout]);
+
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <div className="flex h-screen flex-col">
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <div className="flex min-h-svh flex-col bg-slate-100 text-slate-900">
 
         {/* Toolbar */}
-        <header className="flex h-12 items-center justify-end gap-2 border-b bg-white px-4">
+        <header className="flex min-h-16 flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
+          <div>
+            <p className="text-sm font-semibold tracking-wide text-slate-900">
+              Canvas Builder
+            </p>
+            <p
+              className="text-xs text-slate-500"
+              role="status"
+              aria-live="polite"
+            >
+              {status}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={saveLayout}
-            className="rounded border px-3 py-1.5 text-sm hover:bg-gray-50"
+            onClick={handleSave}
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Save
           </button>
 
           <button
             type="button"
-            onClick={loadLayout}
-            className="rounded border px-3 py-1.5 text-sm hover:bg-gray-50"
+            onClick={handleLoad}
+            className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Load
           </button>
+          </div>
         </header>
 
         {/* Builder */}
-        <div className="flex min-h-0 flex-1">
+        <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[15rem_minmax(0,1fr)_18rem]">
 
           {/* Palette */}
-          <aside className="w-60 border-r">
+          <aside className="border-b border-slate-200 bg-white lg:border-b-0 lg:border-r">
             <Palette />
           </aside>
 
           {/* Canvas */}
-          <main className="min-w-0 flex-1">
+          <main className="min-h-[55vh] min-w-0 bg-slate-100 lg:min-h-0">
             <Canvas />
           </main>
 
           {/* Properties */}
-          <aside className="w-60 border-l">
+          <aside className="border-t border-slate-200 bg-white lg:border-l lg:border-t-0">
             <PropertiesPanel />
           </aside>
 

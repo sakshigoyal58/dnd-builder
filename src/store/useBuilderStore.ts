@@ -195,10 +195,15 @@ saveLayout: () => {
     const layout =
       useBuilderStore.getState().layout;
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(layout)
-    );
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(layout)
+      );
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   loadLayout: () => {
@@ -206,14 +211,14 @@ saveLayout: () => {
       localStorage.getItem(STORAGE_KEY);
 
     if (!savedLayout) {
-      return;
+      return false;
     }
 
     try {
       const parsed = JSON.parse(savedLayout);
 
       if (!isValidLayout(parsed)) {
-        return;
+        return false;
       }
 
       set({
@@ -223,8 +228,9 @@ saveLayout: () => {
         },
         selectedId: null,
       });
+      return true;
     } catch {
-      console.error("Invalid saved layout");
+      return false;
     }
   },
 
